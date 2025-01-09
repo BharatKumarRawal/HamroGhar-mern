@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "hamroghar": "file:",
+    "mongoose": "^8.9.3",
     "nodemon": "^3.1.9"
   }
 }
