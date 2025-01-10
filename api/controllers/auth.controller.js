@@ -39,4 +39,47 @@ const signin = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { signup, signin };
+
+const google = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    console.log(user);
+    if (user) {
+      console.log("-----camer here first");
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 12 * 60 * 60 * 1000,
+      });
+      const { password: pass, ...userdata } = user._doc;
+      console.log("User data", userdata);
+      res
+        .status(200)
+        .json({ message: "User logged in successfully", userdata });
+    } else {
+      console.log("-----camer here");
+      const generatedPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+      const newUser = new User({
+        username:
+          req.body.name.split(" ").join("").toLowerCase() +
+          Math.floor(Math.random() * 1000),
+        email: req.body.email,
+        password: hashedPassword,
+        avatar: req.body.photo,
+      });
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 12 * 60 * 60 * 1000,
+      });
+
+      const { password: pass, ...userdata } = newUser._doc;
+      res.status(201).json({ message: "User created successfully", userdata });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = { signup, signin, google };
