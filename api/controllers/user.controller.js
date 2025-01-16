@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const User = require("../models/user.model");
 const errorHandler = require("../utils/error");
 const test = async (req, res) => {
@@ -13,6 +13,7 @@ const updateUser = async (req, res, next) => {
     if (req.body.password) {
       req.body.password = bcrypt.hashSync(req.body.password, 10);
     }
+   
     const updateUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -20,7 +21,6 @@ const updateUser = async (req, res, next) => {
           username: req.body.username,
           email: req.body.email,
           password: req.body.password,
-          avatar: req.body.avatar,
         },
       },
       { new: true }

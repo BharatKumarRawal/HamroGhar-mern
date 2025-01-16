@@ -41,7 +41,7 @@ const Signin = () => {
       dispatch(signinSuccess(data.user));
       // localStorage.setItem("token", data.token);
 
-      navigate("/");
+      navigate("/profile");
     } catch (error) {
       dispatch(signInFailure(error.message));
     }
