@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const port = 3000;
 const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/user.route");
 const authRouter = require("./routes/auth.route");
 dotenv.config();
@@ -22,7 +23,7 @@ mongoose
 app.listen(port, () => {
   console.log(`Server is running on port ${port}!!`);
 });
-
+app.use(cookieParser());
 app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
@@ -31,4 +32,3 @@ app.use((err, req, res, next) => {
   const message = err.message || "Internal Server Error";
   return res.status(statusCode).json({ success: false, message, statusCode });
 });
-
