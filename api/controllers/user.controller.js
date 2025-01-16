@@ -13,7 +13,7 @@ const updateUser = async (req, res, next) => {
     if (req.body.password) {
       req.body.password = bcrypt.hashSync(req.body.password, 10);
     }
-   
+
     const updateUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -33,7 +33,20 @@ const updateUser = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  if (req.user.id !== req.params.id) {
+    return next(errorHandler(401, "You can only delete your account"));
+  }
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   test,
   updateUser,
+  deleteUser,
 };

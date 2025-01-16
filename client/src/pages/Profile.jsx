@@ -4,6 +4,12 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+  signOutStart,
+  signOutSuccess,
+  signOutFailure,
 } from "../redux/user/userSlice";
 
 const Profile = () => {
@@ -36,7 +42,38 @@ const Profile = () => {
       dispatch(updateUserFailure(error.message));
     }
   };
-  console.log(formData);
+  const handleDelete = async () => {
+    dispatch(deleteUserStart());
+    try {
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data.message));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+  const handleSignOut = async () => {
+    dispatch(signOutStart());
+    try {
+      const res = await fetch("/api/auth/logout");
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signOutFailure(data.message));
+        return;
+      }
+      alert(data.message);
+      dispatch(signOutSuccess(data.message));
+    } catch (error) {
+      dispatch(signOutFailure(error.message));
+    }
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-semibold text-center my-7 ">Profile</h1>
@@ -77,8 +114,12 @@ const Profile = () => {
           </button>
         </form>
         <div className="flex justify-between mt-4">
-          <span className="text-red-600 cursor-pointer">Delete Account</span>
-          <span className="text-red-600 cursor-pointer">Sign Out</span>
+          <span className="text-red-600 cursor-pointer" onClick={handleDelete}>
+            Delete Account
+          </span>
+          <span className="text-red-600 cursor-pointer" onClick={handleSignOut}>
+            Sign Out
+          </span>
         </div>
         {error && <span className="text-red-600 py-3">{error}</span>}
         {userSuccess && (
