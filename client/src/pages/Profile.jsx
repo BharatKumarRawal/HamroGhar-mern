@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   updateUserStart,
   updateUserSuccess,
@@ -112,6 +113,12 @@ const Profile = () => {
           >
             {loading ? "Loading..." : "Update"}
           </button>
+          <Link
+            to="/create-listing"
+            className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 my-3 text-center"
+          >
+            Create Listing
+          </Link>
         </form>
         <div className="flex justify-between mt-4">
           <span className="text-red-600 cursor-pointer" onClick={handleDelete}>
