@@ -1,10 +1,54 @@
+import { useSelector } from "react-redux";
+
 const CreateListing = () => {
+  const userRef = useSelector((state) => state.user.currentUser._id);
+  console.log(userRef);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    const elements = e.target.elements;
+    formData.append("name", elements.name.value);
+    formData.append("description", elements.description.value);
+    formData.append("address", elements.address.value);
+    formData.append("regularPrice", elements.regularPrice.value);
+    formData.append("discountedPrice", elements.discountedPrice.value);
+    formData.append("bathrooms", elements.bathrooms.value);
+    formData.append("bedrooms", elements.bedrooms.value);
+    formData.append("furnished", elements.furnished.checked);
+    formData.append("parking", elements.parking.checked);
+    formData.append("sell", elements.sell.checked);
+    formData.append("rent", elements.rent.checked);
+    formData.append("userRef", userRef);
+
+    const files = elements.images.files;
+    if (files.length > 6) {
+      alert("You can only upload a maximum of 6 images");
+      return;
+    }
+
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i]);
+    }
+
+    try {
+      const res = await fetch("/api/listing/create", {
+        method: "POST",
+        body: formData,
+        // credentials: "include",
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
         Create Listing
       </h1>
-      <form className="flex flex-col sm:flex-row gap-3">
+      <form className="flex flex-col sm:flex-row gap-3" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
@@ -31,7 +75,7 @@ const CreateListing = () => {
           ></input>
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
-              <input type="checkbox" id="sale" className="w-5"></input>
+              <input type="checkbox" id="sell" className="w-5"></input>
               <span>Sell</span>
             </div>
             <div className="flex gap-2">
@@ -45,10 +89,6 @@ const CreateListing = () => {
             <div className="flex gap-2">
               <input type="checkbox" id="furnished" className="w-5"></input>{" "}
               <span>Furnished</span>
-            </div>
-            <div className="flex gap-2">
-              <input type="checkbox" id="offer" className="w-5"></input>{" "}
-              <span>Offer</span>
             </div>
           </div>
           <div className="flex flex-wrap gap-6">
@@ -105,7 +145,7 @@ const CreateListing = () => {
               The first image will be the cover (max 6)
             </span>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex items-center">
             <input
               type="file"
               accept="image/*"
@@ -114,9 +154,12 @@ const CreateListing = () => {
               required
               className="p-3 border border-gray-400 rounded-lg w-full"
             ></input>
-            <button className="bg-green-600 text-white p-3 rounded-lg border border-green-600 uppercase hover:shadow-lg disabled:opacity-50">
+            {/* <button
+              type="button"
+              className="bg-green-600 text-white p-3 rounded-lg border border-green-600 uppercase hover:shadow-lg disabled:opacity-50"
+            >
               Upload
-            </button>
+            </button> */}
           </div>
           <button className="bg-red-600 text-white p-3 rounded-lg border border-red-600 uppercase hover:shadow-lg disabled:opacity-50 my-5">
             Create Listing

@@ -7,6 +7,12 @@ const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/user.route");
 const authRouter = require("./routes/auth.route");
 const listingRouter = require("./routes/listing.route");
+const fileUpload = require("express-fileupload");
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
 dotenv.config();
 
 mongoose

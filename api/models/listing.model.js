@@ -37,15 +37,19 @@ const listingSchema = new mongoose.Schema(
     parking: {
       type: Boolean,
       required: true,
+      default: false,
     },
-    type: {
-      type: String,
-      required: true,
-    },
-    offer: {
+    sell: {
       type: Boolean,
       required: true,
+      default: false,
     },
+    rent: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+
     imageUrls: {
       type: Array,
       required: true,
